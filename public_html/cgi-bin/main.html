@@ -1,0 +1,332 @@
+Content-Type: text/html
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--specify the location of css and javascript files and open them -->
+    <link rel="stylesheet" type="text/css" href="../stylesheetc.css">
+    <script src="../functionfile.js"></script>
+    <title>Fields and Finds</title>
+  </head>
+  <body>
+    <header>
+      <h1>Farmer's Fields and Archaeological Finds</h1>
+    </header>
+    <!-- creating tabs to go to different spaces within the webpage, one is linking
+    to a new python document: inditable.py which is called when clicked. The default tab is the home one  -->
+    <button class="tablink" onclick="openPage(this, 'Home', ' #f8f5da ')" id="defaultOpen">Home</button>
+    <button class="tablink" onClick="location.href='inditable.py'" >Individual Table</button>
+    <button class="tablink" onclick="openPage(this, 'Instructions',  ' #f8f5da ')">Instructions</button>
+    <button class="tablink" onclick="openPage( this, 'Contact', ' #f8f5da ')">Contact</button>
+
+
+    <div id="Home" class="tabcontent">
+      <div class="row">
+        <div class="column middle">
+          <h3>Map of Fields and Finds</h3>
+          <p>
+            <!-- These buttons are calling the Javascript functions to hide and show fields finds and the grid -->
+            <button class = "button" type="button" onclick="hidefields()">Hide & Show Fields</button>
+            <button class = "button" type="button" onclick="hidefinds()">Hide & Show Finds</button>
+            <button class = "button" type="button" onclick="hidegrid()">Hide & Show Grid</button><br>
+
+          </p>
+          <!-- The Map is drawn within a svg
+          to gurantee a flexible webpage the numbers of the size of viewbox etc are dependet on the database -->
+          <svg id="map" viewBox = "{{greatviewbox}}">
+            <!-- the first viewbox displays the ticks, in that way they do not had to be scaled or transalted -->
+            {{svgtickxx}}
+            {{svgtickyy}}
+
+            <svg  viewBox="{{vb}}">
+              <!-- the second viewbox must be scaled and transalted -->
+              <g transform="translate(0,{{vbhy}})">
+                <g transform="scale(1, -1)">
+                  <rect x="{{vblx}}" y="{{vbly}}" width="{{vbhx}}" height="{{vbhy}}" stroke="black" stroke-width="0.1" fill = "white"/>
+                  <!-- inside the rectangle fields, finds and the grid are placed, those are rendered within the python script -->
+                  <g id ="svgFields">{{svggField}}</g>
+                  <g id ="svgFinds">{{svggpoint}}</g>
+                  <g id ="grid">{{gridsvgyy}} {{gridsvgxx}}</g>
+                </g>
+              </g>
+            </svg>
+
+
+          </svg>
+
+          <p>
+
+            <button class = "button" type="button" onclick="unselectfunction()">Clear Selection</button>
+
+          </p>
+
+        <div>
+          <!-- This svg displays the legend box. It also includes the changecolourfiel function to make the legend clickable and
+          generate a better user interface -->
+          <svg viewbox="0 0 3 3">
+            <rect x ="0" y="0" width="2" height="1" stroke="black" stroke-width="0.01" fill = "white"/>
+            <circle cx="0.2" cy="0.3" r="0.05"/>
+            <rect onclick = "changecolourfieldcrops(1)" x ="0.15" y="0.49" width="0.2" height="0.15" stroke="black" stroke-width="0.01" class="fields1 hoverfield" />
+            <rect onclick = "changecolourfieldcrops(2)" x ="0.15" y="0.75" width="0.2" height="0.15" stroke="black" stroke-width="0.01" class="fields2 hoverfield" />
+            <rect onclick = "changecolourfieldcrops(3)" x ="1.2" y="0.26" width="0.2" height="0.15" stroke="black" stroke-width="0.01" class="fields3 hoverfield"/>
+            <rect onclick = "changecolourfieldcrops(4)" x ="1.2" y="0.49" width="0.2" height="0.15" stroke="black" stroke-width="0.01" class="fields4 hoverfield"/>
+            <rect onclick = "changecolourfieldcrops(5)" x ="1.2" y="0.75" width="0.2" height="0.15" stroke="black" stroke-width="0.01" class="fields5 hoverfield"/>
+            <text x="0.12" y="0.15" fill="black" font-weight="bold" font-size="0.0999">Legend for Finds and Fields (Croptype)</text>
+            <text x="0.42" y="0.34" fill="black" font-size="0.09">Find</text/>
+            <text x="0.42" y="0.59" fill="black" font-size="0.09">Turnips</text/>
+            <text x="0.42" y="0.87" fill="black" font-size="0.09">Oil Seed Rape</text/>
+            <text x="1.5" y="0.34" fill="black" font-size="0.09">Strawberry</text/>
+            <text x="1.5" y="0.59" fill="black" font-size="0.09">Peas</text/>
+            <text x="1.5" y="0.87" fill="black" font-size="0.09">Potatoes</text/>
+          </svg>
+      </div>
+
+
+    </div>
+
+    <script>
+        //this code is partly taken from codepen.io, but customized to fit the purpose of my webpage
+        function sortTable(table, n) {
+          // introduce variables
+          var
+            rows,
+            switching,
+            i,
+            x,
+            y,
+            shouldSwitch,
+            dir,
+            switchcount = 0;
+          // set switching true
+          switching = true;
+          //Set the sorting direction to ascending:
+          dir = "asc";
+          // loop as long as switch is true, meaining as long data needs to be switched
+          while (switching) {
+            //set switching to false bc no switching has been done yet
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            // nesetd loop that iterates over all rows except the first one
+            for (i = 1; i < rows.length - 1; i++) {
+
+              shouldSwitch = false;
+              // get elements taht shall be compared
+              x = rows[i].getElementsByTagName("TD")[n];
+              y = rows[i + 1].getElementsByTagName("TD")[n];
+
+
+              // check for siwtiching based on asc and desc
+              if (dir == "asc") {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                  shouldSwitch = true;
+                  // if x is bigger than y, should switch true and break the loop otheriwse continue
+                  // same for descending
+                  break;
+                }
+              } else if (dir == "desc") {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+            if (shouldSwitch) {
+
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              // set switch to true, that it has successfully completed the switch
+              switchcount++;
+            } else {
+              /*If no switching has been done AND the direction is "asc",
+              set the direction to "desc" and run the while loop again.*/
+              if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
+        }
+      </script>
+      <!-- start the second column of teh webpage which displays the tables of the database -->
+      <div class="column side2">
+          <p>
+            <h3> Tables of the Database </h3>
+            <h4> Table of Farmers Field's: </h4>
+            <div style="overflow-x:auto;">{{tablefieldsH}}</div>
+            <h4> Table of Archaeological Finds: </h4>
+            <div style="overflow-x:auto;">{{tablefinds}}</div>
+            <h4> Table of Crops: </h4>
+            <div style="overflow-x:auto;">{{tablecropss}}</div>
+            <h4> Table of the Archaeological Artefacts: </h4>
+            <div style="overflow-x:auto;">{{tableartefacts}}</div>
+          </p>
+      </div>
+        <!-- start the third column of the webpage which allwos further exploration of teh database-->
+        <div class="column side3">
+          <p>
+            <h3> Explore further! </h3>
+            <h4> Select by Attribute Functions </h4>
+             <button class= "button"  onClick="location.href='main.py'">Reset Queries</button><br>
+          </p>
+          <!-- checkboxes to select farmers. This will be sent to the python document, when being submitted -->
+          <p> See who owns which field
+            <ul class="ks-cboxtags">
+              <form name="Farmer" action="main.py" method="get">
+                <li><input type="checkbox" id="Brown" name="farmer"  value="1"><label for="Brown">Farmer Brown</label></li>
+                <li><input type="checkbox" id="Green" name="farmer" value="2"><label for="Green">Farmer Green</label></li><br>
+                <li><input type="checkbox" id="White" name="farmer" value="3" ><label for="White">Farmer White</label></li>
+                <li><input type="checkbox" id="Black" name="farmer" value="4"><label for="Black">Farmer Black</label></li><br><br>
+                <li><input class= "button"  type="submit" value="Submit"></li>
+                </form>
+              </ul>
+
+          </p>
+          <!-- Select finds by their depth. Values will be send to the python document -->
+
+          <div class="slidecontainer">
+            <p>Select Finds with Depth greater than:</p>
+            <form name="Depth" action="main.py" method="get">
+              <input type="range" min="0" max="2" step= "0.01" name = "depth" value="0.0" class="slider" id="chosendepth">
+              <input class= "button" type="submit" value="Submit">
+            </form>
+            <p>
+              Value: <span id="showdepth"></span>
+            </p><br>
+            <!-- Select with checkboxes periods, which will be send to main.py -->
+            <p> Select Periods to find Finds
+              <ul class="ks-cboxtags">
+                <form name="Period" action="main.py" method="get">
+                  <li><input type="checkbox" id="Bronze" name="period"  value="1"><label for="Bronze">Bronze</label></li>
+                  <li><input type="checkbox" id="Iron" name="period" value="2"><label for="Iron">Iron Age</label></li><br>
+                  <li><input type="checkbox" id="Mesolithic" name="period" value="3" ><label for="Mesolithic">Mesolithic</label></li>
+                  <li><input type="checkbox" id="Recent" name="period" value="4"><label for="Recent">Recent</label></li><br><br>
+                  <li><input class= "button"  type="submit" value="Submit">
+                </form> <br>
+              </ul>
+            </p>
+            <!-- Select with checkboxes farmers, which will be send to main.py
+          and see which finds are owned by which farmer -->
+            <p> Select a farmer to find out the finds he/she/they owns:
+              <ul class="ks-cboxtags">
+                <form name="findfarmer" action="main.py" method="get">
+                  <li><input type="checkbox" id="Brown1" name="farmerfind"  value="1"><label for="Brown1">Farmer Brown</label></li>
+                  <li><input type="checkbox" id="Green2" name="farmerfind" value="2"><label for="Green2">Farmer Green</label></li><br>
+                  <li><input type="checkbox" id="White3" name="farmerfind" value="3" ><label for="White3">Farmer White</label></li>
+                  <li><input type="checkbox" id="Black4" name="farmerfind" value="4"><label for="Black4">Farmer Black</label></li><br><br>
+                  <li><input class= "button"  type="submit" value="Submit"> <li>
+                  </form>
+                </ul>
+                <!-- Select with checkboxes of fields and calculate the
+              the summed area -->
+                <h4> Geometric Analysis </h4>
+                <p> Calculate area of multiple fields
+                  <ul class="ks-cboxtags">
+                    <form name="Area" action="main.py" method="get">
+                      <li><input type="checkbox" id="0" name="area"  value="0"><label for="0">Field 1</label></li>
+                      <li><input type="checkbox" id="1" name="area" value="1"><label for="1">Field 2</label></li><br>
+                      <li><input type="checkbox" id="2" name="area" value="2" ><label for="2">Field 3</label></li>
+                      <li><input type="checkbox" id="3" name="area" value="3"><label for="3">Field 4</label></li><br>
+                      <li><input type="checkbox" id="4" name="area" value="4" ><label for="4">Field 5</label></li>
+                      <li><input type="checkbox" id="5" name="area" value="5"><label for="5">Field 6</label></li><br>
+                      <li><input type="checkbox" id="6" name="area" value="6" ><label for="6">Field 7</label></li>
+                      <li><input type="checkbox" id="7" name="area" value="7"><label for="7">Field 8</label></li><br><br>
+                      <li><input class= "button"  type="submit" value="Submit">
+                    </form> <br>
+                  </ul>
+                </p>
+                The total area of the selected fields: {{area}}
+              </div>
+            </div>
+
+            <script>
+            // this script displays the depth that was chosen with the range
+            var slider = document.getElementById("chosendepth");
+            var output = document.getElementById("showdepth");
+            output.innerHTML = slider.value;
+
+            slider.oninput = function() {
+              output.innerHTML = this.value;
+            }
+          </script>
+        </div>
+      </div>
+
+      <div id="IndiTable" class="tabcontent">
+          <!-- this tab is opened with another python file -->
+      </div>
+      <!-- the other tabs shall give instructions on the usage of the webpage and possibilities to conatct me -->
+      <div id="Instructions" class="tabcontent">
+        <h2>Get the best experience!</h2>
+        <p>This website represents interactively the database of Fields and Finds. Enjoy finding out more about the Archaeological Finds and Farmers Fields <br>
+          Following is a list of features you can use to explore the data in detail: <br>
+          <ul>
+            <li>Hover over fields and finds and see detailed information of each Field/Find</li>
+            <li>Show or hide Fields, Finds and the Grid as you wish</li>
+            <li>Click on Fields and Finds and see the corresponding highlighted row in the tables</li>
+            <li>Click on rows in any of the four tables and see which field and find are corresponding</li>
+            <li>Try out clicking on the legend's symbolds to see where they are</li>
+            <li>When finishing your observations, just click "Clear Selection" to return to status-quo </li>
+            <li>Click on the headers of the tables to sort them as you like</li>
+            <li>On the right-hand side you can find further exploration tools. <br>
+            Use them to find out more about Field and Finds.</li>
+            <li> Come back to the normal page with the "Reset" button</li>
+            <li>Go to "Make your own Table" to select the columns for your individual table <br>
+            Combine multiple columns. Easily resubmit to clear your selection and start over</li>
+            <li>Click on "Contact" to find information about the author of this webpage <br> and later (after assignemnt)
+            redirected to the GitHub link to see the code</li><br>
+          </ul>
+          I hope you enjoy the webpage!
+
+        </p>
+      </div>
+
+      <div id="Contact" class="tabcontent">
+        <h2>Contact</h2>
+          <p>
+            The author can be contacted: s1937352@ed.ac.uk <br>
+            The code can be found on GitHub.com. The link of the repository will be released after assignment to guarantee anonymus submission
+          </p>
+        </div>
+
+        <script>
+        // this function helps to open the new tabs and the content displayed
+        // this code is partlz taken from w3school.com but customized
+        // to fit my purpose
+        function openPage(elmnt, pageName, color) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+
+          for (i = 0; i < tablinks.length; i++) {
+
+            tablinks[i].style.backgroundColor = "";
+
+          }
+          document.getElementById(pageName).style.display = "block";
+
+          elmnt.style.backgroundColor = color;
+
+        }
+      // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+      </script>
+      <footer>
+        <!-- the end of the webpage is a footer -->
+        <p>
+          I hope you had fun and learned a lot about Fields and Finds <br>
+          See you soon!<br>
+        </p>
+        <p>
+          Exam No. B154523<br>
+          School of Geoscience<br>
+          University of Edinburgh<br>
+          January 2020
+        </p>
+      </footer>
+    </body>
+  </html>

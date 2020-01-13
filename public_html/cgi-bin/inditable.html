@@ -1,0 +1,180 @@
+Content-Type: text/html
+
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../stylesheetc.css">
+
+<script src="../functionfile.js"></script>
+
+<!-- This html is just redering the one tab, that allwos the user
+ to create their individual table, it also has the instructions and contact
+tab to ensure better perfomrnace -->
+<title>Fields and Finds</title>
+</head>
+  <body>
+    <header>
+      <h2>Farmer's Fields and Archaeological Finds</h2>
+    </header>
+    <!-- Buttons are linking to the other tabs, one of them being the main py -->
+    <button class="tablink" onClick="location.href='main.py'">Home</button>
+    <button class="tablink" onclick="openPage( this, 'IndiTable', ' #f8f5da ')" id="defaultOpen" >Individual Table</button>
+    <button class="tablink" onclick="openPage(this, 'Instructions',  ' #f8f5da ')">Instructions</button>
+    <button class="tablink" onclick="openPage( this, 'Contact', ' #f8f5da ')">Contact</button>
+    <div id="Home" class="tabcontent" >
+    </div>
+    </div>
+    <div id="IndiTable" class="tabcontent">
+          <p>
+            Select the columns you want in your table
+          </p>
+            <!-- Checkboxes, where the user can select the columns he/she
+            wants to display in the table -->
+            <ul class="ks-cboxtags">
+          <form name="sqlbox" action="inditable.py" method="get">
+            <p> Finds: </p>
+            <li><input type="checkbox" id="Find_ID" name="sql"  value="GISTEACH.Finds.Find_ID"><label for="Find_ID">Find ID</label></li>
+            <li><input type="checkbox" id="xcoord" name="sql" value="GISTEACH.Finds.XCoord"><label for="xcoord">X Coordinate</label></li>
+            <li><input type="checkbox" id="ycoord" name="sql" value="GISTEACH.Finds.YCoord"><label for="ycoord">Y Coordinate</label></li>
+            <li><input type="checkbox" id="depth" name="sql" value="GISTEACH.Finds.Depth"><label for="depth">Depth</label></li>
+            <li><input type="checkbox" id="notes" name="sql" value="GISTEACH.Finds.Field_Notes"><label for="notes">Field Notes</label></li><br>
+            <p> Artefact Classes: </p>
+            <li><input type="checkbox" id="typeID" name="sql"  value="GISTEACH.Finds.Type"><label for="typeID">Class Type ID</label></li>
+            <li><input type="checkbox" id="classname" name="sql" value="GISTEACH.Class.Name"><label for="classname">Class Name</label></li>
+            <li><input type="checkbox" id="period" name="sql" value="GISTEACH.Class.Period"><label for="period">Period</label></li>
+            <li><input type="checkbox" id="use" name="sql"  value="GISTEACH.Class.Use"><label for="use">Use</label></li><br>
+            <p> Fields: </p>
+            <li><input type="checkbox" id="fieldid" name="sql"  value="GISTEACH.Fields.Field_ID"><label for="fieldid">Field ID</label></li>
+            <li><input type="checkbox" id="lowx" name="sql" value="GISTEACH.Fields.LowX"><label for="lowx">Low X</label></li>
+            <li><input type="checkbox" id="lowy" name="sql" value="GISTEACH.Fields.LowY" ><label for="lowy">Low Y</label></li>
+            <li><input type="checkbox" id="highx" name="sql"  value="GISTEACH.Fields.HiX"><label for="highx">High X</label></li>
+            <li><input type="checkbox" id="highy" name="sql" value="GISTEACH.Fields.HiY"><label for="highy">High Y</label></li>
+            <li><input type="checkbox" id="area" name="sql" value="GISTEACH.Fields.Area" ><label for="area">Area</label></li>
+            <li><input type="checkbox" id="owner" name="sql"  value="GISTEACH.Fields.Owner"><label for="owner">Owner</label></li><br>
+            <p> Crop Types: </p>
+            <li><input type="checkbox" id="crop" name="sql" value="GISTEACH.Crops.Crop"><label for="crop">Crop ID</label></li>
+            <li><input type="checkbox" id="cropname" name="sql" value="GISTEACH.Crops.Name" ><label for="cropname">Crop Name</label></li>
+            <li><input type="checkbox" id="sseason" name="sql"  value="GISTEACH.Crops.Start_of_Season"><label for="sseason">Start of Season</label></li>
+            <li><input type="checkbox" id="eseason" name="sql" value="GISTEACH.Crops.End_of_Season"><label for="eseason">End of Season</label></li><br><br>
+            <input class= "button" type="submit" value="Submit">
+          </form>
+          <br>
+        </ul>
+        <!-- after the input is send to the inditable.py and teh table is renderes, it will be displayed here -->
+        {{tableindii}}
+       <!-- the other tabs are again displayed -->
+      </div>
+      <!-- nest tabs for instructions and contact -->
+      <div id="Instructions" class="tabcontent">
+        <h2>Get the best experience!</h2>
+        <p>This website represents interactively the database of Fields and Finds. Enjoy finding out more about the Archaeological Finds and Farmers Fields <br>
+          Following is a list of features you can use to explore the data in detail: <br>
+          <ul>
+            <li>Hover over fields and finds and see detailed information of each Field/Find</li>
+            <li>Show or hide Fields, Finds and the Grid as you wish</li>
+            <li>Click on Fields and Finds and see the corresponding highlighted row in the tables</li>
+            <li>Click on rows in any of the four tables and see which field and find are corresponding</li>
+            <li>Try out clicking on the legend's symbolds to see where they are</li>
+            <li>When finishing your observations, just click "Clear Selection" to return to status-quo </li>
+            <li>Click on the headers of the tables to sort them as you like</li>
+            <li>On the right-hand side you can find further exploration tools. <br>
+            Use them to find out more about Field and Finds.</li>
+            <li> Come back to the normal page with the "Reset" button</li>
+            <li>Go to "Make your own Table" to select the columns for your individual table <br>
+            Combine multiple columns. Easily resubmit to clear your selection and start over</li>
+            <li>Click on "Contact" to find information about the author of this webpage <br> and later (after assignemnt)
+            redirected to the GitHub link to see the code</li><br>
+          </ul>
+          I hope you enjoy the webpage!
+        </p>
+      </div>
+      <div id="Contact" class="tabcontent">
+        <h3>Contact</h3>
+        <p>
+          The author can be contacted after the assignment : s1937352@ed.ac.uk <br>
+          The code can be found on GitHub.com. The link of the repository will be released after assignment to guarantee anonymus submission
+        </p>
+      </div>
+      <script>
+    //this code is partly taken from codepen.io, but customized to fit the purpose of my webpage
+      // Get the element with id="defaultOpen" and click on it
+                document.getElementById("defaultOpen").click();
+                  //this code is partly taken from codepen.io, but customized to fit the purpose of my webpage
+                  function sortTable(table, n) {
+                    // introduce variables
+                    var
+
+                      rows,
+                      switching,
+                      i,
+                      x,
+                      y,
+                      shouldSwitch,
+                      dir,
+                      switchcount = 0;
+                    // set switching true
+                    switching = true;
+                    //Set the sorting direction to ascending:
+                    dir = "asc";
+                    // loop as long as switch is true, meaining as long data needs to be switched
+                    while (switching) {
+                      //set switching to false bc no switching has been done yet
+                      switching = false;
+                      rows = table.getElementsByTagName("TR");
+
+                      // nesetd loop that iterates over all rows except the first one
+                      for (i = 1; i < rows.length - 1; i++) {
+
+                        shouldSwitch = false;
+                        // get elements taht shall be compared
+                        x = rows[i].getElementsByTagName("TD")[n];
+                        y = rows[i + 1].getElementsByTagName("TD")[n];
+                        // check for siwtiching based on asc and desc
+                        if (dir == "asc") {
+                          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            // if x is bigger than y, should switch true and break the loop otheriwse continue
+                            // same for descending
+                            break;
+                          }
+                        } else if (dir == "desc") {
+                          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                          }
+                        }
+                      }
+                      if (shouldSwitch) {
+
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                        // set switch to true, that it has successfully completed the switch
+                        switchcount++;
+                      } else {
+                        /*If no switching has been done AND the direction is "asc",
+                        set the direction to "desc" and run the while loop again.*/
+                        if (switchcount == 0 && dir == "asc") {
+                          dir = "desc";
+                          switching = true;
+                        }
+                      }
+                    }
+                  }
+      </script>
+      <footer>
+      <!-- the end of the webpage is a footer -->
+      <p>
+        I hope you had fun and learned a lot about Fields and Finds <br>
+        See you soon!<br>
+      </p>
+      <p>
+        Exam No. B154523<br>
+        School of Geoscience<br>
+        University of Edinburgh<br>
+        January 2020
+      </p>
+    </footer>
+    </body>
+  </html>
